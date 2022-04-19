@@ -107,8 +107,11 @@ class Agent():
 if __name__ == '__main__':
     env = gym.make('FrozenLake-v1', is_slippery=False, map_name='8x8')
 
-    config = {'alpha': 0.001, 'gamma': 0.9,
-              'epsilon': 0.025, 'episode_count': 5000}
+    config = {'alpha': 0.001,             # learning rate
+              'gamma': 0.9,             # discount factor
+              'epsilon': 0.025,         # probability of picking a random action
+              'episode_count': 5000     # number of episodes to train
+              }
 
     agent = Agent(env, config)
     agent.run_policy_once()
