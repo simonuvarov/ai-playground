@@ -16,7 +16,7 @@ class Agent():
         # list of trajectories
         self.history = []
 
-    def pick_epsilon_greedy_action(self, obs):
+    def __epsilon_greedy_policy(self, obs):
         if np.random.random() < self.config['epsilon']:
             return self.env.action_space.sample()
         else:
@@ -27,7 +27,7 @@ class Agent():
         Update the Q table
         '''
         # choose the next action using soft policy
-        next_action = self.pick_epsilon_greedy_action(next_state)
+        next_action = self.__epsilon_greedy_policy(next_state)
 
         self.Q[state, action] = self.Q[state, action] + self.config['alpha'] * \
             (reward + self.config['gamma'] * self.Q[next_state,
@@ -55,7 +55,7 @@ class Agent():
 
             while True:
                 # pick action acoring to the epsilon-greedy policy
-                action = self.pick_epsilon_greedy_action(state)
+                action = self.__epsilon_greedy_policy(state)
 
                 # get the next state and reward
                 next_state, reward, done, _ = self.env.step(action)
@@ -79,9 +79,10 @@ class Agent():
 
     def policy(self, obs):
         '''
-        Generate a policy from the Q table
+        Generate a policy from the Q table.
+        For SARSA, this is the same as epsilon-greedy policy.
         '''
-        return self.pick_epsilon_greedy_action(obs)
+        return self.__epsilon_greedy_policy(obs)
 
     def run_policy_once(self):
         obs = self.env.reset()
