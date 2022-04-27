@@ -16,11 +16,19 @@ class Agent():
         # list of trajectories
         self.history = []
 
+    def __decay_epsilon(self):
+        self.config['epsilon'] *= self.config['epsilon_decay']
+
     def __epsilon_greedy_policy(self, obs):
+        action = -1
         if np.random.random() < self.config['epsilon']:
-            return self.env.action_space.sample()
+            action = self.env.action_space.sample()
         else:
-            return random_argmax(self.Q[obs])
+            action = random_argmax(self.Q[obs])
+
+        self.__decay_epsilon()
+
+        return action
 
     def update_Q_value(self, state, action, reward,  next_state):
         '''
@@ -99,10 +107,11 @@ class Agent():
 if __name__ == '__main__':
     env = gym.make('FrozenLake-v1', is_slippery=False, map_name='8x8')
 
-    config = {'alpha': 0.1,             # learning rate
+    config = {'alpha': 0.001,           # learning rate
               'gamma': 0.9,             # discount factor
               'epsilon': 0.025,         # probability of picking a random action
-              'episode_count': 5000     # number of episodes to train
+              'epsilon_decay': 0.999,   # decay rate of epsilon
+              'episode_count': 5000     # number of episodes to train,
               }
 
     agent = Agent(env, config)
