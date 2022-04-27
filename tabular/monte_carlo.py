@@ -114,7 +114,6 @@ if __name__ == '__main__':
               }
 
     agent = Agent(env, config)
-    agent.run_policy_once()
     agent.train()
     agent.run_policy_once()
 
