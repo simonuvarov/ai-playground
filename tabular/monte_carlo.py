@@ -3,33 +3,13 @@ import logging
 import gym
 import numpy as np
 
+from agent import Agent
 from utils import random_argmax
 
 logging.basicConfig(level=logging.INFO)
 
 
-class Agent():
-    def __init__(self, env, config):
-        self.env = env
-        self.Q = np.zeros([env.observation_space.n, env.action_space.n])
-        self.config = config
-        # list of trajectories
-        self.history = []
-
-    def __decay_epsilon(self):
-        self.config['epsilon'] *= self.config['epsilon_decay']
-
-    def __epsilon_greedy_policy(self, obs):
-        action = -1
-        if np.random.random() < self.config['epsilon']:
-            action = self.env.action_space.sample()
-        else:
-            action = random_argmax(self.Q[obs])
-
-        self.__decay_epsilon()
-
-        return action
-
+class MC_Agent(Agent):
     def calculate_return(self, trajectory):
         '''
         Calculate the return of the first state in a trajectory
@@ -51,13 +31,6 @@ class Agent():
             self.Q[state, action] += self.config['alpha'] * \
                 (G - self.Q[state, action])
 
-    def save_trajectory(self, trajectory):
-        '''
-        Save the trajectory metadata
-        trajectory: list of tuples
-        '''
-        return self.history.append(trajectory)
-
     def train(self):
         logging.info('Training started')
         for episode in range(self.config['episode_count']):
@@ -73,7 +46,7 @@ class Agent():
 
             while True:
                 # pick action acoring to the epsilon-greedy policy
-                action = self.__epsilon_greedy_policy(state)
+                action = self.epsilon_greedy_policy(state)
 
                 # get the next state and reward
                 next_state, reward, done, _ = self.env.step(action)
@@ -99,18 +72,7 @@ class Agent():
         Generate a policy from the Q table
         For the MC algorithm, it is the same as epsilon-greedy policy.
         '''
-        return self.__epsilon_greedy_policy(obs)
-
-    def run_policy_once(self):
-        obs = self.env.reset()
-
-        for _ in range(100):
-            self.env.render()
-            action = self.policy(obs)
-            obs, _, done, _ = self.env.step(action)
-            if done:
-                env.render()
-                break
+        return self.epsilon_greedy_policy(obs)
 
 
 if __name__ == '__main__':
@@ -118,12 +80,12 @@ if __name__ == '__main__':
 
     config = {'alpha': 0.001,           # learning rate
               'gamma': 0.9,             # discount factor
-              'epsilon': 0.025,         # probability of picking a random action
+              'epsilon': 0.9,           # probability of picking a random action
               'epsilon_decay': 0.999,   # decay rate of epsilon
               'episode_count': 5000     # number of episodes to train,
               }
 
-    agent = Agent(env, config)
+    agent = MC_Agent(env, config)
     agent.train()
     agent.run_policy_once()
 

@@ -3,39 +3,17 @@ import logging
 import gym
 import numpy as np
 
+from agent import Agent
 from utils import random_argmax
 
 logging.basicConfig(level=logging.INFO)
 
 
-class Agent():
-    def __init__(self, env, config):
-        self.env = env
-        self.Q = np.zeros([env.observation_space.n, env.action_space.n])
-        self.config = config
-        # list of trajectories
-        self.history = []
+class SARSA_Agent(Agent):
 
-    def __decay_epsilon(self):
-        self.config['epsilon'] *= self.config['epsilon_decay']
-
-    def __epsilon_greedy_policy(self, obs):
-        action = -1
-        if np.random.random() < self.config['epsilon']:
-            action = self.env.action_space.sample()
-        else:
-            action = random_argmax(self.Q[obs])
-
-        self.__decay_epsilon()
-
-        return action
-
-    def update_Q_value(self, state, action, reward,  next_state):
-        '''
-        Update the Q table
-        '''
+    def update_Q_table(self, state, action, reward,  next_state):
         # choose the next action using soft policy
-        next_action = self.__epsilon_greedy_policy(next_state)
+        next_action = self.epsilon_greedy_policy(next_state)
 
         self.Q[state, action] = self.Q[state, action] + self.config['alpha'] * \
             (reward + self.config['gamma'] * self.Q[next_state,
@@ -63,7 +41,7 @@ class Agent():
 
             while True:
                 # pick action acoring to the epsilon-greedy policy
-                action = self.__epsilon_greedy_policy(state)
+                action = self.epsilon_greedy_policy(state)
 
                 # get the next state and reward
                 next_state, reward, done, _ = self.env.step(action)
@@ -72,7 +50,7 @@ class Agent():
                 trajectory.append((state, action, reward))
 
                 # update the value in Q table
-                self.update_Q_value(state, action, reward, next_state)
+                self.update_Q_table(state, action, reward, next_state)
 
                 # update the state
                 state = next_state
@@ -90,18 +68,7 @@ class Agent():
         Generate a policy from the Q table.
         For SARSA, this is the same as epsilon-greedy policy.
         '''
-        return self.__epsilon_greedy_policy(obs)
-
-    def run_policy_once(self):
-        obs = self.env.reset()
-
-        for _ in range(100):
-            self.env.render()
-            action = self.policy(obs)
-            obs, _, done, _ = self.env.step(action)
-            if done:
-                env.render()
-                break
+        return self.epsilon_greedy_policy(obs)
 
 
 if __name__ == '__main__':
@@ -114,7 +81,7 @@ if __name__ == '__main__':
               'episode_count': 5000     # number of episodes to train,
               }
 
-    agent = Agent(env, config)
+    agent = SARSA_Agent(env, config)
     agent.train()
     agent.run_policy_once()
 
