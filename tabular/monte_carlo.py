@@ -57,6 +57,7 @@ class MC_Agent(Agent):
                 state = next_state
 
                 if done:
+                    trajectory.append((next_state, -1, 0.0))
                     break
 
             # update the Q table after finishing the episode

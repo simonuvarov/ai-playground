@@ -50,6 +50,7 @@ class Q_Agent(Agent):
                 state = next_state
 
                 if done:
+                    trajectory.append((next_state, -1, 0.0))
                     break
 
             # add the trajectory to the history

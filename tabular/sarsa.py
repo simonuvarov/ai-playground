@@ -56,6 +56,7 @@ class SARSA_Agent(Agent):
                 state = next_state
 
                 if done:
+                    trajectory.append((next_state, -1, 0.0))
                     break
 
             # add the trajectory to the history
@@ -75,7 +76,9 @@ if __name__ == '__main__':
     env = gym.make('FrozenLake-v1', is_slippery=False, map_name='8x8')
 
     agent = SARSA_Agent(env)
-    agent.train()
-    agent.run_policy()
+    agent.train(5000)
+    # agent.run_policy()
+
+    agent.plot_rewards()
 
     env.close()
