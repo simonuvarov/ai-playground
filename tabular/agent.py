@@ -45,7 +45,7 @@ class Agent():
     def save_trajectory(self, trajectory):
         '''
         Save the trajectory metadata
-        trajectory: list of tuples
+        trajectory: list of tuples (state, action, reward)
         '''
         return self.history.append(trajectory)
 
