@@ -4,7 +4,6 @@ import gym
 import numpy as np
 
 from agent import Agent
-from utils import random_argmax
 
 logging.basicConfig(level=logging.INFO)
 
@@ -18,7 +17,7 @@ class MC_Agent(Agent):
         r = 0
         for index, transition in enumerate(trajectory):
             reward = transition[2]
-            r += (self.config['gamma'] ** index) * reward
+            r += (self.gamma ** index) * reward
         return r
 
     def update_Q_table(self, trajectory):
@@ -28,12 +27,12 @@ class MC_Agent(Agent):
         '''
         for index, (state, action, _) in enumerate(trajectory):
             G = self.calculate_return(trajectory[index:])
-            self.Q[state, action] += self.config['alpha'] * \
+            self.Q[state, action] += self.alpha * \
                 (G - self.Q[state, action])
 
-    def train(self):
+    def train(self, episode_count=1000):
         logging.info('Training started')
-        for episode in range(self.config['episode_count']):
+        for episode in range(episode_count):
 
             # reset the episode
             state = self.env.reset()
@@ -78,15 +77,8 @@ class MC_Agent(Agent):
 if __name__ == '__main__':
     env = gym.make('FrozenLake-v1', is_slippery=False, map_name='8x8')
 
-    config = {'alpha': 0.001,           # learning rate
-              'gamma': 0.9,             # discount factor
-              'epsilon': 0.9,           # probability of picking a random action
-              'epsilon_decay': 0.999,   # decay rate of epsilon
-              'episode_count': 5000     # number of episodes to train,
-              }
-
-    agent = MC_Agent(env, config)
-    agent.train()
+    agent = MC_Agent(env)
+    agent.train(2000)
     agent.run_policy_once()
 
     env.close()

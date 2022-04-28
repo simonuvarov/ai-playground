@@ -4,7 +4,6 @@ import gym
 import numpy as np
 
 from agent import Agent
-from utils import random_argmax
 
 logging.basicConfig(level=logging.INFO)
 
@@ -17,13 +16,13 @@ class Q_Agent(Agent):
         # choose the next action greedy
         next_action = np.argmax(self.Q[next_state])
 
-        self.Q[state, action] = self.Q[state, action] + self.config['alpha'] * \
-            (reward + self.config['gamma'] * self.Q[next_state,
-                                                    next_action] - self.Q[state, action])
+        self.Q[state, action] = self.Q[state, action] + self.alpha * \
+            (reward + self.gamma * self.Q[next_state,
+                                          next_action] - self.Q[state, action])
 
-    def train(self):
+    def train(self, episode_count=1000):
         logging.info('Training started')
-        for episode in range(self.config['episode_count']):
+        for episode in range(episode_count):
 
             # reset the episode
             state = self.env.reset()
@@ -69,14 +68,8 @@ class Q_Agent(Agent):
 if __name__ == '__main__':
     env = gym.make('FrozenLake-v1', is_slippery=False, map_name='8x8')
 
-    config = {'alpha': 0.1,             # learning rate
-              'gamma': 0.9,             # discount factor
-              'epsilon': 0.1,           # probability of picking a random action
-              'epsilon_decay': 1,       # decay rate of epsilon
-              'episode_count': 5000     # number of episodes to train
-              }
-
-    agent = Q_Agent(env, config)
+    # we don't need to decay epsilon for Q-learning
+    agent = Q_Agent(env, epsilon_decay=0.9, epsilon=0.2)
     agent.train()
     agent.run_policy_once()
     env.close()

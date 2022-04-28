@@ -4,19 +4,30 @@ from utils import random_argmax
 
 
 class Agent():
-    def __init__(self, env, config):
+    def __init__(self, env, alpha=0.1, gamma=0.9, epsilon=0.1, epsilon_decay=0.99):
+        '''
+        Initialize the agent
+        env: the environment
+        alpha: learning rate
+        gamma: discount factor
+        epsilon: probability of picking a random action
+        epsilon_decay: decay rate of epsilon       
+        '''
         self.env = env
         self.Q = np.zeros([env.observation_space.n, env.action_space.n])
-        self.config = config
+        self.alpha = alpha
+        self.gamma = gamma
+        self.epsilon = epsilon
+        self.epsilon_decay = epsilon_decay
         # list of trajectories
         self.history = []
 
     def decay_epsilon(self):
-        self.config['epsilon'] *= self.config['epsilon_decay']
+        self.epsilon *= self.epsilon_decay
 
     def epsilon_greedy_policy(self, obs):
         action = -1
-        if np.random.random() < self.config['epsilon']:
+        if np.random.random() < self.epsilon:
             action = self.env.action_space.sample()
         else:
             action = random_argmax(self.Q[obs])
@@ -38,7 +49,7 @@ class Agent():
         '''
         return self.history.append(trajectory)
 
-    def train(self):
+    def train(self, episode_count=1000):
         pass
 
     def policy(self, obs):

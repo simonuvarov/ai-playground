@@ -15,9 +15,9 @@ class SARSA_Agent(Agent):
         # choose the next action using soft policy
         next_action = self.epsilon_greedy_policy(next_state)
 
-        self.Q[state, action] = self.Q[state, action] + self.config['alpha'] * \
-            (reward + self.config['gamma'] * self.Q[next_state,
-                                                    next_action] - self.Q[state, action])
+        self.Q[state, action] = self.Q[state, action] + self.alpha * \
+            (reward + self.gamma * self.Q[next_state,
+                                          next_action] - self.Q[state, action])
 
     def save_trajectory(self, trajectory):
         '''
@@ -26,9 +26,9 @@ class SARSA_Agent(Agent):
         '''
         return self.history.append(trajectory)
 
-    def train(self):
+    def train(self, episode_count=1000):
         logging.info('Training started')
-        for episode in range(self.config['episode_count']):
+        for episode in range(episode_count):
 
             # reset the episode
             state = self.env.reset()
@@ -37,7 +37,7 @@ class SARSA_Agent(Agent):
 
             # print the episode number
             if(episode % 500 == 0):
-                logging.info(f'Running episode {episode}')
+                logging.info(f'Running episode {episode}\r')
 
             while True:
                 # pick action acoring to the epsilon-greedy policy
@@ -74,14 +74,7 @@ class SARSA_Agent(Agent):
 if __name__ == '__main__':
     env = gym.make('FrozenLake-v1', is_slippery=False, map_name='8x8')
 
-    config = {'alpha': 0.001,           # learning rate
-              'gamma': 0.9,             # discount factor
-              'epsilon': 0.025,         # probability of picking a random action
-              'epsilon_decay': 0.999,   # decay rate of epsilon
-              'episode_count': 5000     # number of episodes to train,
-              }
-
-    agent = SARSA_Agent(env, config)
+    agent = SARSA_Agent(env)
     agent.train()
     agent.run_policy_once()
 
