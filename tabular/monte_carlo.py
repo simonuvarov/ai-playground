@@ -79,6 +79,6 @@ if __name__ == '__main__':
 
     agent = MC_Agent(env)
     agent.train(2000)
-    agent.run_policy_once()
+    agent.run_policy()
 
     env.close()

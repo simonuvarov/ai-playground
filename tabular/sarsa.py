@@ -76,6 +76,6 @@ if __name__ == '__main__':
 
     agent = SARSA_Agent(env)
     agent.train()
-    agent.run_policy_once()
+    agent.run_policy()
 
     env.close()

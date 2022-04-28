@@ -58,13 +58,16 @@ class Agent():
         '''
         pass
 
-    def run_policy_once(self):
-        obs = self.env.reset()
-
-        for _ in range(100):
-            self.env.render()
-            action = self.policy(obs)
-            obs, _, done, _ = self.env.step(action)
-            if done:
+    def run_policy(self, n=10):
+        '''
+        Run the policy n times
+        '''
+        for run in range(n):
+            obs = self.env.reset()
+            for step in range(100):
                 self.env.render()
-                break
+                action = self.policy(obs)
+                obs, _, done, _ = self.env.step(action)
+                if done:
+                    self.env.render()
+                    break
