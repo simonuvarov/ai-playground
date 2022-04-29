@@ -26,7 +26,7 @@ class SARSA_Agent(Agent):
         '''
         return self.history.append(trajectory)
 
-    def train(self, episode_count=1000):
+    def train(self, episode_count=3000):
         logging.info('Training started')
         for episode in range(episode_count):
 
@@ -47,7 +47,7 @@ class SARSA_Agent(Agent):
                 next_state, reward, done, _ = self.env.step(action)
 
                 # add the transition to the trajectory
-                trajectory.append((state, action, reward))
+                trajectory.append((state, action, reward, next_state))
 
                 # update the value in Q table
                 self.update_Q_table(state, action, reward, next_state)
@@ -56,7 +56,6 @@ class SARSA_Agent(Agent):
                 state = next_state
 
                 if done:
-                    trajectory.append((next_state, -1, 0.0))
                     break
 
             # add the trajectory to the history
@@ -76,9 +75,7 @@ if __name__ == '__main__':
     env = gym.make('FrozenLake-v1', is_slippery=False, map_name='8x8')
 
     agent = SARSA_Agent(env)
-    agent.train(5000)
-    # agent.run_policy()
-
-    agent.plot_rewards()
+    agent.train()
+    agent.run_policy()
 
     env.close()

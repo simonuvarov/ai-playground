@@ -12,7 +12,7 @@ class MC_Agent(Agent):
     def calculate_return(self, trajectory):
         '''
         Calculate the return of the first state in a trajectory
-        trajectory: list of tuples
+        trajectory: list of tuples (state, action, reward, next_state)
         '''
         r = 0
         for index, transition in enumerate(trajectory):
@@ -23,14 +23,14 @@ class MC_Agent(Agent):
     def update_Q_table(self, trajectory):
         '''
         Update the Q table
-        trajectory: list of tuples
+        trajectory: list of tuples (state, action, reward, next_state)
         '''
-        for index, (state, action, _) in enumerate(trajectory):
+        for index, (state, action, reward, next_state) in enumerate(trajectory):
             G = self.calculate_return(trajectory[index:])
             self.Q[state, action] += self.alpha * \
                 (G - self.Q[state, action])
 
-    def train(self, episode_count=1000):
+    def train(self, episode_count=3000):
         logging.info('Training started')
         for episode in range(episode_count):
 
@@ -51,13 +51,12 @@ class MC_Agent(Agent):
                 next_state, reward, done, _ = self.env.step(action)
 
                 # add the transition to the trajectory
-                trajectory.append((state, action, reward))
+                trajectory.append((state, action, reward, next_state))
 
                 # update the state
                 state = next_state
 
                 if done:
-                    trajectory.append((next_state, -1, 0.0))
                     break
 
             # update the Q table after finishing the episode
@@ -79,7 +78,7 @@ if __name__ == '__main__':
     env = gym.make('FrozenLake-v1', is_slippery=False, map_name='8x8')
 
     agent = MC_Agent(env)
-    agent.train(2000)
+    agent.train()
     agent.run_policy()
 
     env.close()

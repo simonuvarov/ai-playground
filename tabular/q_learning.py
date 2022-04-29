@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 class Q_Agent(Agent):
-    def update_Q_value(self, state, action, reward,  next_state):
+    def update_Q_table(self, state, action, reward,  next_state):
         '''
         Update the Q table
         '''
@@ -20,7 +20,7 @@ class Q_Agent(Agent):
             (reward + self.gamma * self.Q[next_state,
                                           next_action] - self.Q[state, action])
 
-    def train(self, episode_count=1000):
+    def train(self, episode_count=3000):
         logging.info('Training started')
         for episode in range(episode_count):
 
@@ -41,16 +41,15 @@ class Q_Agent(Agent):
                 next_state, reward, done, _ = self.env.step(action)
 
                 # add the transition to the trajectory
-                trajectory.append((state, action, reward))
+                trajectory.append((state, action, reward, next_state))
 
                 # update the value in Q table
-                self.update_Q_value(state, action, reward, next_state)
+                self.update_Q_table(state, action, reward, next_state)
 
                 # update the state
                 state = next_state
 
                 if done:
-                    trajectory.append((next_state, -1, 0.0))
                     break
 
             # add the trajectory to the history
