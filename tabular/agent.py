@@ -1,5 +1,6 @@
 import numpy as np
 
+from history import History
 from utils import random_argmax
 
 
@@ -20,7 +21,7 @@ class Agent():
         self.epsilon = epsilon
         self.epsilon_decay = epsilon_decay
         # list of trajectories
-        self.history = []
+        self.history = History()
 
     def decay_epsilon(self):
         self.epsilon *= self.epsilon_decay

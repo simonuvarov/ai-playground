@@ -72,4 +72,5 @@ if __name__ == '__main__':
     agent = Q_Agent(env, epsilon_decay=0.9, epsilon=0.2)
     agent.train()
     agent.run_policy()
+
     env.close()

@@ -8,7 +8,7 @@ from agent import Agent
 logging.basicConfig(level=logging.INFO)
 
 
-class MC_Agent(Agent):
+class MonteCarlo_Agent(Agent):
     def calculate_return(self, trajectory):
         '''
         Calculate the return of the first state in a trajectory
@@ -77,7 +77,7 @@ class MC_Agent(Agent):
 if __name__ == '__main__':
     env = gym.make('FrozenLake-v1', is_slippery=False, map_name='8x8')
 
-    agent = MC_Agent(env)
+    agent = MonteCarlo_Agent(env)
     agent.train()
     agent.run_policy()
 
