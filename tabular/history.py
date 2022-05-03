@@ -1,5 +1,7 @@
 import csv
 
+import pandas as pd
+
 
 class History ():
     def __init__(self):
@@ -36,3 +38,13 @@ class History ():
             for episode, reward, length in zip(
                     range(len(self)), self.episode_rewards, self.episode_lengths):
                 writer.writerow([episode, reward, length])
+
+    def to_df(self):
+        '''
+        Return a pandas dataframe
+        '''
+        return pd.DataFrame({
+            'episode': range(len(self)),
+            'reward': self.episode_rewards,
+            'length': self.episode_lengths
+        })
