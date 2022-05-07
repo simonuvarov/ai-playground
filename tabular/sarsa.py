@@ -3,8 +3,8 @@ import logging
 import gym
 import numpy as np
 
-from agent import Agent
-from utils import random_argmax
+from tabular.agent import Agent
+from tabular.utils import random_argmax
 
 logging.basicConfig(level=logging.INFO)
 
@@ -36,7 +36,7 @@ class SARSA_Agent(Agent):
             done = False
 
             # print the episode number
-            if(episode % 500 == 0):
+            if(episode % 100 == 0):
                 logging.info(f'Running episode {episode}\r')
 
             while True:

@@ -1,9 +1,8 @@
 import logging
 
 import gym
-import numpy as np
 
-from agent import Agent
+from tabular.agent import Agent
 
 logging.basicConfig(level=logging.INFO)
 

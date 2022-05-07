@@ -1,7 +1,7 @@
 import numpy as np
 
-from history import History
-from utils import random_argmax
+from tabular.history import History
+from tabular.utils import random_argmax
 
 
 class Agent():

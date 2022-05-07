@@ -30,7 +30,7 @@ class Q_Agent(Agent):
             done = False
 
             # print the episode number
-            if(episode % 500 == 0):
+            if(episode % 100 == 0):
                 logging.info(f'Running episode {episode}')
 
             while True:
