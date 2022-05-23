@@ -20,9 +20,7 @@ class SARSA_Agent(Agent):
         logging.info('Training started')
         for episode in range(episode_count):
 
-            state = self.env.reset()
-            trajectory = []
-            done = False
+            state, trajectory, done = self.env.reset(), [], False
 
             if(episode % 100 == 0):
                 logging.info(f'Running episode {episode}')
