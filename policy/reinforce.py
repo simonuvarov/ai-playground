@@ -22,15 +22,6 @@ class Policy(nn.Module):
         return F.softmax(action_scores, dim=-1)
 
 
-def select_action(state):
-    state = torch.Tensor(state).unsqueeze(0)
-    probs = policy(state)
-    m = Categorical(probs)
-    action = m.sample().item()
-
-    return (action, probs[0][action])
-
-
 policy = Policy()
 optimizer = optim.Adam(policy.parameters(), lr=1e-3)
 running_reward = 10  # ~average reward for a random policy
