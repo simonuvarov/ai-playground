@@ -4,3 +4,4 @@ __pycache__
 *.svg
 *.png
 env
+venv
